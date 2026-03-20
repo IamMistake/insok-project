@@ -25,6 +25,9 @@
                         <x-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">
                             {{ __('Blokadi') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">
+                            {{ __('Povtorlivi blokadi') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">
                             {{ __('Moj kalendar') }}
@@ -94,6 +97,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">
                     {{ __('Blokadi') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">
+                    {{ __('Povtorlivi blokadi') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">

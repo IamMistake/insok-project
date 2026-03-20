@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BlockedPeriodController;
 use App\Http\Controllers\Admin\BusinessHourController;
 use App\Http\Controllers\Admin\CalendarController as AdminCalendarController;
+use App\Http\Controllers\Admin\RecurringBlockedPeriodController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CalendarController;
@@ -38,6 +39,7 @@ Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
     Route::get('/availability', [BookingController::class, 'availability'])->name('bookings.availability');
     Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::patch('/bookings/{booking}/reschedule', [BookingController::class, 'reschedule'])->name('bookings.reschedule');
     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 });
 
@@ -51,6 +53,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::put('/business-hours', [BusinessHourController::class, 'update'])->name('business-hours.update');
 
     Route::resource('blocked-periods', BlockedPeriodController::class)->except(['show']);
+    Route::resource('recurring-blocked-periods', RecurringBlockedPeriodController::class)->except(['show']);
 });
 
 require __DIR__.'/auth.php';

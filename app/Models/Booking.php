@@ -36,4 +36,11 @@ class Booking extends Model
     {
         return $query->where('status', self::STATUS_BOOKED);
     }
+
+    public function scopeOverlapping(Builder $query, $startsAt, $endsAt): Builder
+    {
+        return $query
+            ->where('starts_at', '<', $endsAt)
+            ->where('ends_at', '>', $startsAt);
+    }
 }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\BlockedPeriod;
 use App\Models\Booking;
 use App\Models\BusinessHour;
+use App\Models\RecurringBlockedPeriod;
 use App\Models\Service;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -77,6 +78,20 @@ class DemoDataSeeder extends Seeder
                 'reason' => 'Pauza',
             ],
         );
+
+        foreach (range(1, 5) as $weekday) {
+            RecurringBlockedPeriod::query()->updateOrCreate(
+                [
+                    'weekday' => $weekday,
+                    'start_time' => '12:00',
+                    'end_time' => '13:00',
+                ],
+                [
+                    'reason' => 'Dnevna pauza',
+                    'is_active' => true,
+                ],
+            );
+        }
 
         $bookingStart = CarbonImmutable::now()->addDays(1)->setTime(10, 0);
 

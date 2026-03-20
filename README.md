@@ -7,7 +7,7 @@ Ovoj proekt pretstavuva aplikacija za **rezervacija na uslugi so kalendar i preg
 - Najava i registracija so Laravel Breeze (Blade).
 - Ulogi na korisnici:
   - `admin` - upravuva so uslugi, rabotno vreme, blokirani termini i kalendar.
-  - `client` - pregled na slobodni termini, rezervacija i otkazuvanje.
+  - `client` - pregled na slobodni termini, rezervacija, prezakazuvanje i otkazuvanje.
 - Kalendar prikaz so FullCalendar za:
   - klientski rezervacii,
   - admin pregled na site rezervacii i blokadi.
@@ -15,7 +15,10 @@ Ovoj proekt pretstavuva aplikacija za **rezervacija na uslugi so kalendar i preg
   - rabotno vreme,
   - trajanje na usluga,
   - postoecki rezervacii,
-  - blokirani periodi.
+  - blokirani periodi,
+  - povtorlivi blokirani termini.
+- Email notifikacii pri kreiranje, otkazuvanje i prezakazuvanje na rezervacija.
+- Validacii za edge cases: bez preklopuvanje, bez termini nadvor od rabotno vreme, bez termini vo blokirani intervali.
 
 ## Tehnologii
 
@@ -69,6 +72,7 @@ Po `--seed` se kreiraat slednite korisnici:
 - `/admin/services` - upravuvanje so uslugi.
 - `/admin/business-hours` - rabotno vreme.
 - `/admin/blocked-periods` - blokirani termini.
+- `/admin/recurring-blocked-periods` - povtorlivi blokirani termini.
 
 ## Testiranje
 

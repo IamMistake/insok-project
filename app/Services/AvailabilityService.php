@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\BlockedPeriod;
 use App\Models\Booking;
 use App\Models\BusinessHour;
+use App\Models\RecurringBlockedPeriod;
 use App\Models\Service;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
@@ -16,7 +17,7 @@ class AvailabilityService
     /**
      * @return array<int, array{start: string, end: string, label: string}>
      */
-    public function availableSlots(Service $service, CarbonImmutable $date): array
+    public function availableSlots(Service $service, CarbonImmutable $date, ?int $ignoreBookingId = null): array
     {
         $window = $this->workingWindow($date);
 
@@ -31,16 +32,8 @@ class AvailabilityService
             return [];
         }
 
-        $bookedRanges = Booking::query()
-            ->active()
-            ->where('starts_at', '<', $dayEnd)
-            ->where('ends_at', '>', $dayStart)
-            ->get(['starts_at', 'ends_at']);
-
-        $blockedRanges = BlockedPeriod::query()
-            ->where('starts_at', '<', $dayEnd)
-            ->where('ends_at', '>', $dayStart)
-            ->get(['starts_at', 'ends_at']);
+        $bookedRanges = $this->bookedRanges($dayStart, $dayEnd, $ignoreBookingId);
+        $blockedRanges = $this->blockedRanges($date, $dayStart, $dayEnd);
 
         $now = CarbonImmutable::now();
         $cursor = $dayStart;
@@ -63,9 +56,17 @@ class AvailabilityService
         return $slots;
     }
 
-    public function canBook(Service $service, CarbonImmutable $startsAt): bool
+    public function canBook(Service $service, CarbonImmutable $startsAt, ?int $ignoreBookingId = null): bool
     {
         if ($startsAt->lt(CarbonImmutable::now())) {
+            return false;
+        }
+
+        if (! $service->is_active) {
+            return false;
+        }
+
+        if ($startsAt->second !== 0) {
             return false;
         }
 
@@ -82,22 +83,28 @@ class AvailabilityService
             return false;
         }
 
+        if (! $this->isSlotAligned($startsAt)) {
+            return false;
+        }
+
         $hasBookingConflict = Booking::query()
             ->active()
-            ->where('starts_at', '<', $endsAt)
-            ->where('ends_at', '>', $startsAt)
+            ->when($ignoreBookingId !== null, fn ($query) => $query->whereKeyNot($ignoreBookingId))
+            ->overlapping($startsAt, $endsAt)
             ->exists();
 
         if ($hasBookingConflict) {
             return false;
         }
 
-        $hasBlockedConflict = BlockedPeriod::query()
-            ->where('starts_at', '<', $endsAt)
-            ->where('ends_at', '>', $startsAt)
-            ->exists();
+        $hasBlockedConflict = $this->hasBlockedConflict($startsAt, $endsAt);
 
         return ! $hasBlockedConflict;
+    }
+
+    public function isSlotAligned(CarbonImmutable $startsAt): bool
+    {
+        return $startsAt->minute % self::SLOT_STEP_MINUTES === 0 && $startsAt->second === 0;
     }
 
     /**
@@ -132,6 +139,58 @@ class AvailabilityService
             $rangeEnd = CarbonImmutable::parse($range->ends_at);
 
             return $rangeStart->lt($end) && $rangeEnd->gt($start);
+        });
+    }
+
+    private function bookedRanges(CarbonImmutable $dayStart, CarbonImmutable $dayEnd, ?int $ignoreBookingId = null): Collection
+    {
+        return Booking::query()
+            ->active()
+            ->when($ignoreBookingId !== null, fn ($query) => $query->whereKeyNot($ignoreBookingId))
+            ->overlapping($dayStart, $dayEnd)
+            ->get(['starts_at', 'ends_at']);
+    }
+
+    private function blockedRanges(CarbonImmutable $date, CarbonImmutable $dayStart, CarbonImmutable $dayEnd): Collection
+    {
+        $oneOff = BlockedPeriod::query()
+            ->overlapping($dayStart, $dayEnd)
+            ->get(['starts_at', 'ends_at']);
+
+        $recurring = RecurringBlockedPeriod::query()
+            ->active()
+            ->forDate($date)
+            ->get()
+            ->map(function (RecurringBlockedPeriod $blockedPeriod) use ($date): object {
+                return (object) [
+                    'starts_at' => $date->format('Y-m-d').' '.$blockedPeriod->start_time,
+                    'ends_at' => $date->format('Y-m-d').' '.$blockedPeriod->end_time,
+                ];
+            });
+
+        return $oneOff->concat($recurring)->values();
+    }
+
+    private function hasBlockedConflict(CarbonImmutable $startsAt, CarbonImmutable $endsAt): bool
+    {
+        $oneOffBlocked = BlockedPeriod::query()
+            ->overlapping($startsAt, $endsAt)
+            ->exists();
+
+        if ($oneOffBlocked) {
+            return true;
+        }
+
+        $recurringBlockedPeriods = RecurringBlockedPeriod::query()
+            ->active()
+            ->forDate($startsAt)
+            ->get();
+
+        return $recurringBlockedPeriods->contains(function (RecurringBlockedPeriod $blockedPeriod) use ($startsAt, $endsAt): bool {
+            $rangeStart = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->start_time);
+            $rangeEnd = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->end_time);
+
+            return $rangeStart->lt($endsAt) && $rangeEnd->gt($startsAt);
         });
     }
 }

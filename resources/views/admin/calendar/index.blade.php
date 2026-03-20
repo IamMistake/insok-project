@@ -1,18 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Admin kalendar na rezervacii</h2>
+        <div>
+            <div class="rr-kicker mb-2">Admin overview</div>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Admin kalendar na rezervacii</h2>
+        </div>
     </x-slot>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
-            <div class="flex flex-wrap items-center gap-4 text-sm">
+            <div class="rr-panel flex flex-wrap items-center gap-4 text-sm">
                 <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-teal-700"></span> Rezerviran termin</span>
                 <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-red-600"></span> Blokiran termin</span>
-                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-gray-500"></span> Otkazan termin</span>
+                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-orange-500"></span> Povtorliva blokada</span>
+                <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-[rgba(98,91,82,0.9)]"></span> Otkazan termin</span>
             </div>
 
-            <div class="bg-white shadow-sm sm:rounded-lg p-4 sm:p-6">
-                <div id="admin-calendar"></div>
+            <div class="rr-panel p-4 sm:p-6">
+                <div id="admin-calendar" class="rr-calendar"></div>
             </div>
         </div>
     </div>

@@ -31,6 +31,6 @@
 
     <div class="flex items-center gap-3">
         <x-primary-button>Zacuvaj</x-primary-button>
-        <a href="{{ route('admin.blocked-periods.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Nazad</a>
+        <a href="{{ route('admin.blocked-periods.index') }}" class="text-sm rr-link">Nazad</a>
     </div>
 </div>

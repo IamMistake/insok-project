@@ -7,7 +7,7 @@
 <div class="space-y-4">
     <div>
         <x-input-label for="weekday" value="Den" />
-        <select id="weekday" name="weekday" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+        <select id="weekday" name="weekday" class="rr-control" required>
             @foreach ($dayLabels as $weekdayValue => $label)
                 <option value="{{ $weekdayValue }}" @selected(old('weekday', $blockedPeriod->weekday ?? null) == $weekdayValue)>{{ $label }}</option>
             @endforeach
@@ -44,12 +44,12 @@
     </div>
 
     <label class="inline-flex items-center gap-2">
-        <input type="checkbox" name="is_active" value="1" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" @checked(old('is_active', $blockedPeriod->is_active ?? true))>
-        <span class="text-sm text-gray-700">Aktivna povtorliva blokada</span>
+        <input type="checkbox" name="is_active" value="1" class="rounded border-[color:var(--rr-line)] text-[color:var(--rr-accent)] shadow-sm focus:ring-[rgba(159,122,75,0.2)]" @checked(old('is_active', $blockedPeriod->is_active ?? true))>
+        <span class="text-sm rr-muted">Aktivna povtorliva blokada</span>
     </label>
 
     @if ($errors->any())
-        <div class="rounded-md bg-red-100 p-4 text-red-700">
+        <div class="rr-alert-error">
             <ul class="list-disc pl-5 space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -60,6 +60,6 @@
 
     <div class="flex items-center gap-3">
         <x-primary-button>Zacuvaj</x-primary-button>
-        <a href="{{ route('admin.recurring-blocked-periods.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Nazad</a>
+        <a href="{{ route('admin.recurring-blocked-periods.index') }}" class="text-sm rr-link">Nazad</a>
     </div>
 </div>

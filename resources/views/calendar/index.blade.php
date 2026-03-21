@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="rr-kicker mb-2">Client dashboard</div>
-            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Moe rezervacii i slobodni termini</h2>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">My bookings and available slots</h2>
         </div>
     </x-slot>
 
@@ -24,16 +24,16 @@
 
             <div class="grid gap-6 lg:grid-cols-3">
                 <div class="rr-panel lg:col-span-1">
-                    <h3 class="text-xl text-[color:var(--rr-text)]">Nova rezervacija</h3>
+                    <h3 class="text-xl text-[color:var(--rr-text)]">New booking</h3>
 
                     @if ($services->isEmpty())
-                        <p class="mt-3 text-sm rr-muted">Momentalno nema aktivni uslugi.</p>
+                        <p class="mt-3 text-sm rr-muted">There are no active services right now.</p>
                     @else
                         <form id="booking-form" action="{{ route('bookings.store') }}" method="POST" class="mt-4 space-y-4">
                             @csrf
 
                             <div>
-                                <x-input-label for="service_id" value="Usluga" />
+                                <x-input-label for="service_id" value="Service" />
                                 <select id="service_id" name="service_id" class="rr-control" required>
                                     @foreach ($services as $service)
                                         <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>
@@ -44,30 +44,30 @@
                             </div>
 
                             <div>
-                                <x-input-label for="slot_date" value="Datum" />
+                                <x-input-label for="slot_date" value="Date" />
                                 <x-text-input id="slot_date" type="date" class="mt-1 block w-full" value="{{ now()->format('Y-m-d') }}" required />
                             </div>
 
                             <div>
-                                <div class="text-sm font-medium text-[color:var(--rr-muted)] uppercase tracking-[0.12em]">Slobodni termini</div>
+                                <div class="text-sm font-medium text-[color:var(--rr-muted)] uppercase tracking-[0.12em]">Available slots</div>
                                 <div id="slot-list" class="mt-2 grid grid-cols-2 gap-2"></div>
-                                <p id="slot-message" class="mt-2 text-sm rr-muted">Izberete datum i usluga za prikaz na termini.</p>
+                                <p id="slot-message" class="mt-2 text-sm rr-muted">Select a date and service to view available slots.</p>
                             </div>
 
                             <input id="starts_at" name="starts_at" type="hidden" value="{{ old('starts_at') }}">
 
                             <div>
-                                <x-input-label for="notes" value="Zabeleska (opcionalno)" />
+                                <x-input-label for="notes" value="Notes (optional)" />
                                 <textarea id="notes" name="notes" rows="3" class="rr-control">{{ old('notes') }}</textarea>
                             </div>
 
-                            <x-primary-button>Rezerviraj termin</x-primary-button>
+                            <x-primary-button>Book appointment</x-primary-button>
                         </form>
                     @endif
                 </div>
 
                 <div class="rr-panel lg:col-span-2">
-                    <h3 class="mb-4 text-xl text-[color:var(--rr-text)]">Moj kalendar</h3>
+                    <h3 class="mb-4 text-xl text-[color:var(--rr-text)]">My calendar</h3>
                     <div id="client-calendar" class="rr-calendar"></div>
                 </div>
             </div>
@@ -75,10 +75,10 @@
             <div id="reschedule-panel" class="rr-panel hidden">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <h3 class="text-xl text-[color:var(--rr-text)]">Prezakazi rezervacija</h3>
+                        <h3 class="text-xl text-[color:var(--rr-text)]">Reschedule booking</h3>
                         <p id="reschedule-booking-label" class="mt-1 text-sm rr-muted"></p>
                     </div>
-                    <button id="reschedule-close" type="button" class="text-sm rr-link">Zatvori</button>
+                    <button id="reschedule-close" type="button" class="text-sm rr-link">Close</button>
                 </div>
 
                 <form id="reschedule-form" method="POST" class="mt-4 space-y-4">
@@ -86,33 +86,33 @@
                     @method('PATCH')
 
                     <div>
-                        <x-input-label for="reschedule_date" value="Nov datum" />
+                        <x-input-label for="reschedule_date" value="New date" />
                         <x-text-input id="reschedule_date" type="date" class="mt-1 block w-full max-w-xs" value="{{ now()->format('Y-m-d') }}" required />
                     </div>
 
                     <div>
-                        <div class="text-sm font-medium uppercase tracking-[0.12em] text-[color:var(--rr-muted)]">Slobodni termini za prezakazuvanje</div>
+                        <div class="text-sm font-medium uppercase tracking-[0.12em] text-[color:var(--rr-muted)]">Available slots for rescheduling</div>
                         <div id="reschedule-slot-list" class="mt-2 grid grid-cols-2 gap-2 md:grid-cols-4"></div>
-                        <p id="reschedule-slot-message" class="mt-2 text-sm rr-muted">Izberete rezervacija za da se prikazat termini.</p>
+                        <p id="reschedule-slot-message" class="mt-2 text-sm rr-muted">Select a booking to view available slots.</p>
                     </div>
 
                     <input id="reschedule_starts_at" name="starts_at" type="hidden">
 
-                    <x-primary-button>Prezakazi</x-primary-button>
+                    <x-primary-button>Reschedule</x-primary-button>
                 </form>
             </div>
 
             <div class="rr-table-wrap">
                 <div class="border-b rr-divider p-6">
-                    <h3 class="text-xl text-[color:var(--rr-text)]">Pretstojni rezervacii</h3>
+                    <h3 class="text-xl text-[color:var(--rr-text)]">Upcoming bookings</h3>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="rr-table">
                         <thead>
                             <tr>
-                                <th>Usluga</th>
-                                <th>Termin</th>
+                                <th>Service</th>
+                                <th>Time</th>
                                 <th>Status</th>
                                 <th class="px-6 py-3"></th>
                             </tr>
@@ -124,7 +124,7 @@
                                     <td class="rr-muted">{{ $booking->starts_at->format('d.m.Y H:i') }} - {{ $booking->ends_at->format('H:i') }}</td>
                                     <td>
                                         <span class="{{ $booking->status === \App\Models\Booking::STATUS_BOOKED ? 'rr-badge-success' : 'rr-badge-muted' }}">
-                                            {{ $booking->status === \App\Models\Booking::STATUS_BOOKED ? 'Aktivna' : 'Otkazana' }}
+                                            {{ $booking->status === \App\Models\Booking::STATUS_BOOKED ? 'Active' : 'Cancelled' }}
                                         </span>
                                     </td>
                                     <td class="text-right text-sm">
@@ -135,22 +135,22 @@
                                                 data-reschedule-button
                                                 data-booking-id="{{ $booking->id }}"
                                                 data-service-id="{{ $booking->service_id }}"
-                                                data-service-name="{{ $booking->service?->name ?? 'Usluga' }}"
+                                                data-service-name="{{ $booking->service?->name ?? 'Service' }}"
                                                 data-start-date="{{ $booking->starts_at->format('Y-m-d') }}"
                                                 data-start-label="{{ $booking->starts_at->format('d.m.Y H:i') }}"
-                                            >Prezakazi</button>
+                                            >Reschedule</button>
 
-                                            <form method="POST" action="{{ route('bookings.destroy', $booking) }}" class="inline-block ml-3" onsubmit="return confirm('Dali sakate da ja otkazete rezervacijata?');">
+                                            <form method="POST" action="{{ route('bookings.destroy', $booking) }}" class="inline-block ml-3" onsubmit="return confirm('Do you want to cancel this booking?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Otkazi</button>
+                                                <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Cancel</button>
                                             </form>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-8 text-center text-sm rr-muted">Nemate rezervacii.</td>
+                                    <td colspan="4" class="px-6 py-8 text-center text-sm rr-muted">You have no bookings.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -183,9 +183,23 @@
                 const rescheduleBookingLabel = document.getElementById('reschedule-booking-label');
                 const rescheduleClose = document.getElementById('reschedule-close');
                 const rescheduleButtons = document.querySelectorAll('[data-reschedule-button]');
+                const appTimeZone = "{{ config('app.timezone') }}";
+                const todayLocal = new Date();
+                const todayValue = todayLocal.toLocaleDateString('en-CA', { timeZone: appTimeZone });
+
+                let availabilityRequestId = 0;
+                let rescheduleRequestId = 0;
 
                 const availabilityUrl = "{{ route('bookings.availability') }}";
                 let selectedBooking = null;
+
+                if (dateInput) {
+                    dateInput.value = todayValue;
+                }
+
+                if (rescheduleDate && !rescheduleDate.value) {
+                    rescheduleDate.value = todayValue;
+                }
 
                 async function loadSlots() {
                     if (!serviceSelect || !dateInput || !slotList || !slotMessage) {
@@ -198,14 +212,23 @@
                     if (!serviceId || !date) {
                         slotList.innerHTML = '';
                         startsAtInput.value = '';
-                        slotMessage.textContent = 'Izberete datum i usluga za prikaz na termini.';
+                        slotMessage.textContent = 'Select a date and service to view available slots.';
                         return;
                     }
 
-                    slotMessage.textContent = 'Se vcituvaat termini...';
+                    slotMessage.textContent = 'Loading slots...';
                     slotList.innerHTML = '';
+                    startsAtInput.value = '';
 
-                    const response = await fetch(`${availabilityUrl}?service_id=${serviceId}&date=${date}`, {
+                    availabilityRequestId += 1;
+                    const currentRequestId = availabilityRequestId;
+
+                    const params = new URLSearchParams({
+                        service_id: serviceId,
+                        date,
+                    });
+
+                    const response = await fetch(`${availabilityUrl}?${params.toString()}`, {
                         headers: {
                             'Accept': 'application/json'
                         }
@@ -214,13 +237,18 @@
                     const payload = await response.json();
                     const slots = payload.slots || [];
 
-                    if (!slots.length) {
-                        startsAtInput.value = '';
-                        slotMessage.textContent = 'Nema slobodni termini za ovoj den.';
+                    if (currentRequestId !== availabilityRequestId) {
                         return;
                     }
 
-                    slotMessage.textContent = 'Kliknete na termin za izbor.';
+                    if (!slots.length) {
+                        startsAtInput.value = '';
+                        slotMessage.textContent = 'No available slots for this day.';
+                        slotList.innerHTML = '';
+                        return;
+                    }
+
+                    slotMessage.textContent = 'Click a slot to select it.';
 
                     slots.forEach((slot) => {
                         const button = document.createElement('button');
@@ -237,7 +265,7 @@
                             });
 
                             button.classList.add('bg-[#1f1c18]', 'text-white', 'border-[#1f1c18]');
-                            slotMessage.textContent = `Izbran termin: ${slot.label}`;
+                            slotMessage.textContent = `Selected slot: ${slot.label}`;
                         });
 
                         slotList.appendChild(button);
@@ -251,7 +279,10 @@
 
                     rescheduleSlotList.innerHTML = '';
                     rescheduleStartsAtInput.value = '';
-                    rescheduleSlotMessage.textContent = 'Se vcituvaat termini...';
+                    rescheduleSlotMessage.textContent = 'Loading slots...';
+
+                    rescheduleRequestId += 1;
+                    const currentRequestId = rescheduleRequestId;
 
                     const params = new URLSearchParams({
                         service_id: selectedBooking.serviceId,
@@ -268,12 +299,17 @@
                     const payload = await response.json();
                     const slots = payload.slots || [];
 
-                    if (!slots.length) {
-                        rescheduleSlotMessage.textContent = 'Nema slobodni termini za ovoj den.';
+                    if (currentRequestId !== rescheduleRequestId) {
                         return;
                     }
 
-                    rescheduleSlotMessage.textContent = 'Kliknete na termin za izbor.';
+                    if (!slots.length) {
+                        rescheduleSlotMessage.textContent = 'No available slots for this day.';
+                        rescheduleSlotList.innerHTML = '';
+                        return;
+                    }
+
+                    rescheduleSlotMessage.textContent = 'Click a slot to select it.';
 
                     slots.forEach((slot) => {
                         const button = document.createElement('button');
@@ -289,7 +325,7 @@
                             });
 
                             button.classList.add('bg-[#1f1c18]', 'text-white', 'border-[#1f1c18]');
-                            rescheduleSlotMessage.textContent = `Izbran nov termin: ${slot.label}`;
+                            rescheduleSlotMessage.textContent = `Selected new slot: ${slot.label}`;
                         });
 
                         rescheduleSlotList.appendChild(button);
@@ -306,7 +342,7 @@
                     bookingForm.addEventListener('submit', (event) => {
                         if (!startsAtInput.value) {
                             event.preventDefault();
-                            alert('Izberete sloboden termin pred rezervacija.');
+                            alert('Select an available slot before booking.');
                         }
                     });
                 }
@@ -320,7 +356,7 @@
 
                         rescheduleForm.action = `/bookings/${button.dataset.bookingId}/reschedule`;
                         rescheduleDate.value = button.dataset.startDate;
-                        rescheduleBookingLabel.textContent = `${button.dataset.serviceName} - tekoven termin ${button.dataset.startLabel}`;
+                        rescheduleBookingLabel.textContent = `${button.dataset.serviceName} - current slot ${button.dataset.startLabel}`;
                         reschedulePanel.classList.remove('hidden');
                         loadRescheduleSlots();
                         reschedulePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -341,7 +377,7 @@
                     rescheduleForm.addEventListener('submit', (event) => {
                         if (!rescheduleStartsAtInput.value) {
                             event.preventDefault();
-                            alert('Izberete nov sloboden termin pred prezakazuvanje.');
+                            alert('Select a new available slot before rescheduling.');
                         }
                     });
                 }
@@ -353,7 +389,8 @@
                         initialView: window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek',
                         height: 'auto',
                         firstDay: 1,
-                        locale: 'mk',
+                        locale: 'en',
+                        timeZone: appTimeZone,
                         headerToolbar: {
                             left: 'prev,next today',
                             center: 'title',

@@ -32,7 +32,7 @@ class RecurringBlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.recurring-blocked-periods.index')
-            ->with('status', 'Povtorliviot blokiran termin e dodaden.');
+            ->with('status', 'Recurring block added.');
     }
 
     public function show(RecurringBlockedPeriod $recurringBlockedPeriod): void
@@ -54,7 +54,7 @@ class RecurringBlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.recurring-blocked-periods.index')
-            ->with('status', 'Povtorliviot blokiran termin e azuriran.');
+            ->with('status', 'Recurring block updated.');
     }
 
     public function destroy(RecurringBlockedPeriod $recurringBlockedPeriod): RedirectResponse
@@ -63,7 +63,7 @@ class RecurringBlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.recurring-blocked-periods.index')
-            ->with('status', 'Povtorliviot blokiran termin e izbrisan.');
+            ->with('status', 'Recurring block deleted.');
     }
 
     private function validateBlockedPeriod(Request $request): array

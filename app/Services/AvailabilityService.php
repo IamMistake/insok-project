@@ -8,6 +8,7 @@ use App\Models\BusinessHour;
 use App\Models\RecurringBlockedPeriod;
 use App\Models\Service;
 use Carbon\CarbonImmutable;
+use DateTimeInterface;
 use Illuminate\Support\Collection;
 
 class AvailabilityService
@@ -35,7 +36,7 @@ class AvailabilityService
         $bookedRanges = $this->bookedRanges($dayStart, $dayEnd, $ignoreBookingId);
         $blockedRanges = $this->blockedRanges($date, $dayStart, $dayEnd);
 
-        $now = CarbonImmutable::now();
+        $now = CarbonImmutable::now($date->getTimezone());
         $cursor = $dayStart;
         $slots = [];
 
@@ -122,8 +123,9 @@ class AvailabilityService
         }
 
         $day = $date->format('Y-m-d');
-        $dayStart = CarbonImmutable::parse("{$day} {$businessHour->start_time}");
-        $dayEnd = CarbonImmutable::parse("{$day} {$businessHour->end_time}");
+        $timezone = $date->getTimezone();
+        $dayStart = CarbonImmutable::parse("{$day} {$businessHour->start_time}", $timezone);
+        $dayEnd = CarbonImmutable::parse("{$day} {$businessHour->end_time}", $timezone);
 
         if ($dayEnd->lte($dayStart)) {
             return null;
@@ -135,8 +137,8 @@ class AvailabilityService
     private function overlaps(CarbonImmutable $start, CarbonImmutable $end, Collection $ranges): bool
     {
         return $ranges->contains(function (object $range) use ($start, $end): bool {
-            $rangeStart = CarbonImmutable::parse($range->starts_at);
-            $rangeEnd = CarbonImmutable::parse($range->ends_at);
+            $rangeStart = $this->normalizeDate($range->starts_at);
+            $rangeEnd = $this->normalizeDate($range->ends_at);
 
             return $rangeStart->lt($end) && $rangeEnd->gt($start);
         });
@@ -163,8 +165,8 @@ class AvailabilityService
             ->get()
             ->map(function (RecurringBlockedPeriod $blockedPeriod) use ($date): object {
                 return (object) [
-                    'starts_at' => $date->format('Y-m-d').' '.$blockedPeriod->start_time,
-                    'ends_at' => $date->format('Y-m-d').' '.$blockedPeriod->end_time,
+                    'starts_at' => CarbonImmutable::parse($date->format('Y-m-d').' '.$blockedPeriod->start_time, $date->getTimezone()),
+                    'ends_at' => CarbonImmutable::parse($date->format('Y-m-d').' '.$blockedPeriod->end_time, $date->getTimezone()),
                 ];
             });
 
@@ -187,10 +189,24 @@ class AvailabilityService
             ->get();
 
         return $recurringBlockedPeriods->contains(function (RecurringBlockedPeriod $blockedPeriod) use ($startsAt, $endsAt): bool {
-            $rangeStart = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->start_time);
-            $rangeEnd = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->end_time);
+            $timezone = $startsAt->getTimezone();
+            $rangeStart = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->start_time, $timezone);
+            $rangeEnd = CarbonImmutable::parse($startsAt->format('Y-m-d').' '.$blockedPeriod->end_time, $timezone);
 
             return $rangeStart->lt($endsAt) && $rangeEnd->gt($startsAt);
         });
+    }
+
+    private function normalizeDate(string|DateTimeInterface|CarbonImmutable $value): CarbonImmutable
+    {
+        if ($value instanceof CarbonImmutable) {
+            return $value;
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return CarbonImmutable::instance($value);
+        }
+
+        return CarbonImmutable::parse($value);
     }
 }

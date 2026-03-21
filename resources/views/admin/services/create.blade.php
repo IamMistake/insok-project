@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="rr-kicker mb-2">Admin setup</div>
-            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Nova usluga</h2>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">New service</h2>
         </div>
     </x-slot>
 

@@ -29,14 +29,14 @@ class BookingCreatedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Potvrda za rezervacija')
-            ->greeting('Zdravo '.$notifiable->name.',')
-            ->line('Vasata rezervacija e uspesno kreirana.')
-            ->line('Usluga: '.$this->booking->service->name)
-            ->line('Termin: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
-            ->line('Status: Aktivna rezervacija')
-            ->action('Pregled na rezervacii', route('dashboard'))
-            ->line('Vi blagodarime za koristenje na aplikacijata.');
+            ->subject('Booking confirmation')
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line('Your booking has been created successfully.')
+            ->line('Service: '.$this->booking->service->name)
+            ->line('Time: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
+            ->line('Status: Active booking')
+            ->action('View bookings', route('dashboard'))
+            ->line('Thank you for using the app.');
     }
 
     /**

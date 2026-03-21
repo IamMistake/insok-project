@@ -28,7 +28,7 @@ class BlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.blocked-periods.index')
-            ->with('status', 'Blokiraniot period e dodaden.');
+            ->with('status', 'Blocked period added.');
     }
 
     public function show(BlockedPeriod $blockedPeriod): void
@@ -49,7 +49,7 @@ class BlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.blocked-periods.index')
-            ->with('status', 'Blokiraniot period e azuriran.');
+            ->with('status', 'Blocked period updated.');
     }
 
     public function destroy(BlockedPeriod $blockedPeriod): RedirectResponse
@@ -58,7 +58,7 @@ class BlockedPeriodController extends Controller
 
         return redirect()
             ->route('admin.blocked-periods.index')
-            ->with('status', 'Blokiraniot period e izbrisan.');
+            ->with('status', 'Blocked period deleted.');
     }
 
     private function validateBlockedPeriod(Request $request): array

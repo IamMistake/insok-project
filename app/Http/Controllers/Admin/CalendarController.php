@@ -25,18 +25,21 @@ class CalendarController extends Controller
             'end' => ['required', 'date', 'after:start'],
         ]);
 
+        $start = CarbonImmutable::parse($validated['start'], config('app.timezone'));
+        $end = CarbonImmutable::parse($validated['end'], config('app.timezone'));
+
         $bookings = Booking::query()
             ->with(['service:id,name', 'user:id,name'])
-            ->where('starts_at', '<', $validated['end'])
-            ->where('ends_at', '>', $validated['start'])
+            ->where('starts_at', '<', $end->toDateTimeString())
+            ->where('ends_at', '>', $start->toDateTimeString())
             ->get()
             ->map(function (Booking $booking): array {
                 return [
                     'id' => 'booking-'.$booking->id,
                     'title' => sprintf(
                         '%s - %s',
-                        $booking->service?->name ?? 'Usluga',
-                        $booking->user?->name ?? 'Klient',
+                        $booking->service?->name ?? 'Service',
+                        $booking->user?->name ?? 'Client',
                     ),
                     'start' => $booking->starts_at?->toIso8601String(),
                     'end' => $booking->ends_at?->toIso8601String(),
@@ -45,21 +48,21 @@ class CalendarController extends Controller
             });
 
         $blockedPeriods = BlockedPeriod::query()
-            ->where('starts_at', '<', $validated['end'])
-            ->where('ends_at', '>', $validated['start'])
+            ->where('starts_at', '<', $end->toDateTimeString())
+            ->where('ends_at', '>', $start->toDateTimeString())
             ->get()
             ->map(function (BlockedPeriod $blockedPeriod): array {
                 return [
                     'id' => 'blocked-'.$blockedPeriod->id,
-                    'title' => $blockedPeriod->reason ?: 'Blokiran termin',
+                    'title' => $blockedPeriod->reason ?: 'Blocked period',
                     'start' => $blockedPeriod->starts_at?->toIso8601String(),
                     'end' => $blockedPeriod->ends_at?->toIso8601String(),
                     'color' => '#dc2626',
                 ];
             });
 
-        $rangeStart = CarbonImmutable::parse($validated['start'])->startOfDay();
-        $rangeEnd = CarbonImmutable::parse($validated['end'])->endOfDay();
+        $rangeStart = $start->startOfDay();
+        $rangeEnd = $end->endOfDay();
         $recurringBlockedPeriods = collect();
 
         for ($cursor = $rangeStart; $cursor->lte($rangeEnd); $cursor = $cursor->addDay()) {
@@ -70,7 +73,7 @@ class CalendarController extends Controller
                 ->map(function (RecurringBlockedPeriod $blockedPeriod) use ($cursor): array {
                     return [
                         'id' => 'recurring-blocked-'.$blockedPeriod->id.'-'.$cursor->format('Ymd'),
-                        'title' => $blockedPeriod->reason ?: 'Povtorliva blokada',
+                        'title' => $blockedPeriod->reason ?: 'Recurring block',
                         'start' => $cursor->format('Y-m-d').'T'.substr($blockedPeriod->start_time, 0, 8),
                         'end' => $cursor->format('Y-m-d').'T'.substr($blockedPeriod->end_time, 0, 8),
                         'color' => '#f97316',

@@ -32,7 +32,7 @@ class ServiceController extends Controller
 
         return redirect()
             ->route('admin.services.index')
-            ->with('status', 'Uslugata e uspesno dodadena.');
+            ->with('status', 'Service added successfully.');
     }
 
     public function show(Service $service): void
@@ -56,7 +56,7 @@ class ServiceController extends Controller
 
         return redirect()
             ->route('admin.services.index')
-            ->with('status', 'Uslugata e uspesno azurirana.');
+            ->with('status', 'Service updated successfully.');
     }
 
     public function destroy(Service $service): RedirectResponse
@@ -68,14 +68,14 @@ class ServiceController extends Controller
 
             return redirect()
                 ->route('admin.services.index')
-                ->with('status', 'Uslugata ima rezervacii i e samo deaktivirana.');
+                ->with('status', 'The service has bookings and was deactivated instead of deleted.');
         }
 
         $service->delete();
 
         return redirect()
             ->route('admin.services.index')
-            ->with('status', 'Uslugata e izbrisana.');
+            ->with('status', 'Service deleted.');
     }
 
     private function validateService(Request $request): array

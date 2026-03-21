@@ -46,7 +46,7 @@
 
 @layer components {
     .rr-page-shell {
-        @apply min-h-screen relative overflow-hidden;
+        @apply min-h-screen relative overflow-x-hidden;
     }
 
     .rr-page-shell::before,

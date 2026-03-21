@@ -24,25 +24,26 @@ class BusinessHourController extends Controller
     {
         $data = $request->validate([
             'hours' => ['required', 'array'],
+            'hours.*.is_active' => ['nullable', 'boolean'],
             'hours.*.start_time' => ['nullable', 'date_format:H:i'],
             'hours.*.end_time' => ['nullable', 'date_format:H:i'],
         ]);
 
         foreach (range(0, 6) as $weekday) {
             $dayData = $data['hours'][$weekday] ?? [];
-            $isActive = array_key_exists('is_active', $dayData);
+            $isActive = ! empty($dayData['is_active']);
             $startTime = $dayData['start_time'] ?? null;
             $endTime = $dayData['end_time'] ?? null;
 
             if ($isActive && (! $startTime || ! $endTime)) {
                 return back()->withErrors([
-                    "hours.{$weekday}.start_time" => 'Za aktiven den se potrebni pocetok i kraj.',
+                    "hours.{$weekday}.start_time" => 'Start and end times are required for an active day.',
                 ])->withInput();
             }
 
             if ($isActive && $startTime >= $endTime) {
                 return back()->withErrors([
-                    "hours.{$weekday}.end_time" => 'Krajot mora da bide po pocetokot.',
+                    "hours.{$weekday}.end_time" => 'End time must be after start time.',
                 ])->withInput();
             }
 
@@ -58,6 +59,6 @@ class BusinessHourController extends Controller
 
         return redirect()
             ->route('admin.business-hours.index')
-            ->with('status', 'Rabotnoto vreme e uspesno azurirano.');
+            ->with('status', 'Business hours updated successfully.');
     }
 }

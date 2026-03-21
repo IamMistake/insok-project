@@ -1,12 +1,12 @@
-<nav x-data="{ open: false }" class="rr-container rr-topbar">
+<nav x-data="{ open: false }" class="rr-container rr-topbar relative z-50">
     <div class="rr-header-card">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center justify-between gap-4">
                 <a href="{{ route('dashboard') }}" class="rr-brand">
                     <span class="rr-brand-mark">R</span>
                     <span class="rr-brand-copy">
-                        <span class="rr-brand-title">RezerviRaj</span>
-                        <span class="rr-brand-subtitle">Booking App</span>
+                        <span class="rr-brand-title">ReserveRight</span>
+                        <span class="rr-brand-subtitle">Booking Platform</span>
                     </span>
                 </a>
 
@@ -21,13 +21,13 @@
             <div class="hidden flex-1 items-center justify-between gap-6 sm:flex">
                 <div class="flex flex-wrap items-center gap-2">
                     @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
-                        <x-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin Kalendar') }}</x-nav-link>
-                        <x-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Uslugi') }}</x-nav-link>
-                        <x-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Rabotno vreme') }}</x-nav-link>
-                        <x-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blokadi') }}</x-nav-link>
-                        <x-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Povtorlivi blokadi') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin calendar') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Services') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Business hours') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blocked periods') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Recurring blocks') }}</x-nav-link>
                     @else
-                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('Moj kalendar') }}</x-nav-link>
+                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('My calendar') }}</x-nav-link>
                     @endif
                 </div>
 
@@ -65,13 +65,13 @@
         <div x-show="open" x-transition class="space-y-3 pt-4 sm:hidden" style="display: none;">
             <div class="space-y-2">
                 @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
-                    <x-responsive-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin Kalendar') }}</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Uslugi') }}</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Rabotno vreme') }}</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blokadi') }}</x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Povtorlivi blokadi') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin calendar') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Services') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Business hours') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blocked periods') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Recurring blocks') }}</x-responsive-nav-link>
                 @else
-                    <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('Moj kalendar') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('My calendar') }}</x-responsive-nav-link>
                 @endif
             </div>
 

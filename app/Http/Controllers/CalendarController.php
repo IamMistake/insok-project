@@ -31,16 +31,19 @@ class CalendarController extends Controller
             'end' => ['required', 'date', 'after:start'],
         ]);
 
+        $start = \Carbon\CarbonImmutable::parse($validated['start'], config('app.timezone'));
+        $end = \Carbon\CarbonImmutable::parse($validated['end'], config('app.timezone'));
+
         $events = Booking::query()
             ->with('service:id,name')
             ->where('user_id', Auth::id())
-            ->where('starts_at', '<', $validated['end'])
-            ->where('ends_at', '>', $validated['start'])
+            ->where('starts_at', '<', $end->toDateTimeString())
+            ->where('ends_at', '>', $start->toDateTimeString())
             ->get()
             ->map(function (Booking $booking): array {
                 return [
                     'id' => $booking->id,
-                    'title' => $booking->service?->name ?? 'Rezervacija',
+                    'title' => $booking->service?->name ?? 'Booking',
                     'start' => $booking->starts_at?->toIso8601String(),
                     'end' => $booking->ends_at?->toIso8601String(),
                     'color' => $booking->status === Booking::STATUS_BOOKED ? '#2563eb' : '#6b7280',

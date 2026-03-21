@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>RezerviRaj</title>
+        <title>ReserveRight</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700|domine:400,700&display=swap" rel="stylesheet" />
         <style>
@@ -496,8 +496,8 @@
                 <a href="/" class="brand">
                     <span class="brand-mark">R</span>
                     <span class="brand-copy">
-                        <span class="brand-title">RezerviRaj</span>
-                        <span class="brand-subtitle">Booking App</span>
+                        <span class="brand-title">ReserveRight</span>
+                        <span class="brand-subtitle">Booking Platform</span>
                     </span>
                 </a>
 
@@ -515,7 +515,7 @@
                         <div class="eyebrow">Quiet precision for modern scheduling</div>
                         <h1>Appointments arranged with calm clarity.</h1>
                         <p>
-                            RezerviRaj is a refined booking platform where clients reserve appointments in moments and admins manage availability with precision, confidence, and ease.
+                            ReserveRight is a refined booking platform where clients reserve appointments in moments and admins manage availability with precision, confidence, and ease.
                         </p>
 
                         <div class="actions">
@@ -618,8 +618,8 @@
             </main>
 
             <footer class="container site-footer">
-                <div>RezerviRaj</div>
-                <div>&copy; {{ now()->year }} RezerviRaj. All rights reserved.</div>
+                <div>ReserveRight</div>
+                <div>&copy; {{ now()->year }} ReserveRight. All rights reserved.</div>
             </footer>
         </div>
     </body>

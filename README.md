@@ -1,62 +1,66 @@
-# Laravel aplikacija za rezervacija na uslugi
+# Laravel Appointment Booking App
 
-Ovoj proekt pretstavuva aplikacija za **rezervacija na uslugi so kalendar i pregled na slobodni termini**.
+This project is a Laravel 13 application for **appointment booking with calendars and available slots**.
 
-## Funkcionalnosti
+## Features
 
-- Najava i registracija so Laravel Breeze (Blade).
-- Ulogi na korisnici:
-  - `admin` - upravuva so uslugi, rabotno vreme, blokirani termini i kalendar.
-  - `client` - pregled na slobodni termini, rezervacija, prezakazuvanje i otkazuvanje.
-- Kalendar prikaz so FullCalendar za:
-  - klientski rezervacii,
-  - admin pregled na site rezervacii i blokadi.
-- Generator na slobodni termini baziran na:
-  - rabotno vreme,
-  - trajanje na usluga,
-  - postoecki rezervacii,
-  - blokirani periodi,
-  - povtorlivi blokirani termini.
-- Email notifikacii pri kreiranje, otkazuvanje i prezakazuvanje na rezervacija.
-- Validacii za edge cases: bez preklopuvanje, bez termini nadvor od rabotno vreme, bez termini vo blokirani intervali.
+- Authentication and registration via Laravel Breeze (Blade).
+- User roles:
+  - `admin` manages services, business hours, blocked periods, and the admin calendar.
+  - `client` views availability, books, reschedules, and cancels appointments.
+- FullCalendar views for:
+  - client bookings,
+  - admin overview of bookings and blocks.
+- Slot generation based on:
+  - business hours,
+  - service duration,
+  - existing bookings,
+  - blocked periods,
+  - recurring blocked periods.
+- Email notifications for booking creation, rescheduling, and cancellation.
+- Validations to prevent overlap, out-of-hours bookings, and blocked time selections.
 
-## Tehnologii
+## Tech Stack
 
 - Laravel 13
-- PHP 8.5+
+- PHP 8.3+
 - SQLite
 - Laravel Breeze (Blade)
 - Tailwind CSS
 - FullCalendar (CDN)
 
-## Instalacija
+## Installation
 
-1. Instaliraj zavisnosti:
+1. Install dependencies:
 
 ```bash
 composer install
 npm install
 ```
 
-2. Konfiguriraj `.env` (vekje e postaveno za SQLite).
+2. Configure `.env` (SQLite is already prepared). Set the provider timezone if needed:
 
-3. Generiraj kluc i pripremi baza:
+```
+APP_TIMEZONE=Europe/Skopje
+```
+
+3. Generate key and prepare the database:
 
 ```bash
 php artisan key:generate
 php artisan migrate:fresh --seed
 ```
 
-4. Startuvaj ja aplikacijata:
+4. Run the application:
 
 ```bash
 php artisan serve
 npm run dev
 ```
 
-## Demo korisnici
+## Demo Accounts
 
-Po `--seed` se kreiraat slednite korisnici:
+After seeding, the following users are created:
 
 - Admin:
   - email: `admin@example.com`
@@ -65,19 +69,19 @@ Po `--seed` se kreiraat slednite korisnici:
   - email: `client@example.com`
   - password: `password`
 
-## Glavni URL ruti
+## Main Routes
 
-- `/calendar` - klientski kalendar i forma za rezervacija.
-- `/admin/calendar` - admin kalendar.
-- `/admin/services` - upravuvanje so uslugi.
-- `/admin/business-hours` - rabotno vreme.
-- `/admin/blocked-periods` - blokirani termini.
-- `/admin/recurring-blocked-periods` - povtorlivi blokirani termini.
+- `/calendar` - client calendar and booking form.
+- `/admin/calendar` - admin calendar.
+- `/admin/services` - manage services.
+- `/admin/business-hours` - business hours.
+- `/admin/blocked-periods` - one-off blocked periods.
+- `/admin/recurring-blocked-periods` - recurring blocks.
 
-## Testiranje
+## Testing
 
 ```bash
 php artisan test
 ```
 
-Testovite pokrivaat osnoven booking flow, preklop na termini i role access restrikcii.
+Tests cover the core booking flow, overlap checks, and role access restrictions.

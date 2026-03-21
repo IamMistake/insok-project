@@ -13,8 +13,6 @@ use Illuminate\Support\Collection;
 
 class AvailabilityService
 {
-    private const SLOT_STEP_MINUTES = 30;
-
     /**
      * @return array<int, array{start: string, end: string, label: string}>
      */
@@ -39,6 +37,7 @@ class AvailabilityService
         $now = CarbonImmutable::now($date->getTimezone());
         $cursor = $dayStart;
         $slots = [];
+        $stepMinutes = $this->slotStepMinutes($service);
 
         while ($cursor->lte($latestStart)) {
             $slotEnd = $cursor->addMinutes($service->duration_minutes);
@@ -51,7 +50,7 @@ class AvailabilityService
                 ];
             }
 
-            $cursor = $cursor->addMinutes(self::SLOT_STEP_MINUTES);
+            $cursor = $cursor->addMinutes($stepMinutes);
         }
 
         return $slots;
@@ -64,10 +63,6 @@ class AvailabilityService
         }
 
         if (! $service->is_active) {
-            return false;
-        }
-
-        if ($startsAt->second !== 0) {
             return false;
         }
 
@@ -84,7 +79,7 @@ class AvailabilityService
             return false;
         }
 
-        if (! $this->isSlotAligned($startsAt)) {
+        if (! $this->isSlotAligned($startsAt, $dayStart, $this->slotStepMinutes($service))) {
             return false;
         }
 
@@ -103,9 +98,24 @@ class AvailabilityService
         return ! $hasBlockedConflict;
     }
 
-    public function isSlotAligned(CarbonImmutable $startsAt): bool
+    public function isSlotAligned(CarbonImmutable $startsAt, CarbonImmutable $dayStart, int $stepMinutes): bool
     {
-        return $startsAt->minute % self::SLOT_STEP_MINUTES === 0 && $startsAt->second === 0;
+        if ($startsAt->second !== 0) {
+            return false;
+        }
+
+        $minutesFromStart = $dayStart->diffInMinutes($startsAt, false);
+
+        if ($minutesFromStart < 0) {
+            return false;
+        }
+
+        return $stepMinutes > 0 && $minutesFromStart % $stepMinutes === 0;
+    }
+
+    private function slotStepMinutes(Service $service): int
+    {
+        return max(1, (int) $service->duration_minutes);
     }
 
     /**

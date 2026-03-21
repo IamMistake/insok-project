@@ -29,11 +29,13 @@ class CalendarController extends Controller
         $end = CarbonImmutable::parse($validated['end'], config('app.timezone'));
 
         $bookings = Booking::query()
-            ->with(['service:id,name', 'user:id,name'])
+            ->with(['service:id,name,description,duration_minutes', 'user:id,name'])
             ->where('starts_at', '<', $end->toDateTimeString())
             ->where('ends_at', '>', $start->toDateTimeString())
             ->get()
             ->map(function (Booking $booking): array {
+                $statusLabel = $booking->status === Booking::STATUS_BOOKED ? 'Active' : 'Cancelled';
+
                 return [
                     'id' => 'booking-'.$booking->id,
                     'title' => sprintf(
@@ -44,6 +46,16 @@ class CalendarController extends Controller
                     'start' => $booking->starts_at?->toIso8601String(),
                     'end' => $booking->ends_at?->toIso8601String(),
                     'color' => $booking->status === Booking::STATUS_BOOKED ? '#0f766e' : '#6b7280',
+                    'extendedProps' => [
+                        'type' => 'booking',
+                        'service_name' => $booking->service?->name,
+                        'service_description' => $booking->service?->description,
+                        'duration_minutes' => $booking->service?->duration_minutes,
+                        'notes' => $booking->notes,
+                        'status' => $booking->status,
+                        'status_label' => $statusLabel,
+                        'client_name' => $booking->user?->name,
+                    ],
                 ];
             });
 
@@ -58,6 +70,10 @@ class CalendarController extends Controller
                     'start' => $blockedPeriod->starts_at?->toIso8601String(),
                     'end' => $blockedPeriod->ends_at?->toIso8601String(),
                     'color' => '#dc2626',
+                    'extendedProps' => [
+                        'type' => 'blocked',
+                        'reason' => $blockedPeriod->reason,
+                    ],
                 ];
             });
 
@@ -77,6 +93,10 @@ class CalendarController extends Controller
                         'start' => $cursor->format('Y-m-d').'T'.substr($blockedPeriod->start_time, 0, 8),
                         'end' => $cursor->format('Y-m-d').'T'.substr($blockedPeriod->end_time, 0, 8),
                         'color' => '#f97316',
+                        'extendedProps' => [
+                            'type' => 'recurring_blocked',
+                            'reason' => $blockedPeriod->reason,
+                        ],
                     ];
                 });
 

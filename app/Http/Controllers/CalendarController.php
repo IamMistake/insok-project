@@ -35,18 +35,29 @@ class CalendarController extends Controller
         $end = \Carbon\CarbonImmutable::parse($validated['end'], config('app.timezone'));
 
         $events = Booking::query()
-            ->with('service:id,name')
+            ->with('service:id,name,description,duration_minutes')
             ->where('user_id', Auth::id())
             ->where('starts_at', '<', $end->toDateTimeString())
             ->where('ends_at', '>', $start->toDateTimeString())
             ->get()
             ->map(function (Booking $booking): array {
+                $statusLabel = $booking->status === Booking::STATUS_BOOKED ? 'Active' : 'Cancelled';
+
                 return [
                     'id' => $booking->id,
                     'title' => $booking->service?->name ?? 'Booking',
                     'start' => $booking->starts_at?->toIso8601String(),
                     'end' => $booking->ends_at?->toIso8601String(),
                     'color' => $booking->status === Booking::STATUS_BOOKED ? '#2563eb' : '#6b7280',
+                    'extendedProps' => [
+                        'type' => 'booking',
+                        'service_name' => $booking->service?->name,
+                        'service_description' => $booking->service?->description,
+                        'duration_minutes' => $booking->service?->duration_minutes,
+                        'notes' => $booking->notes,
+                        'status' => $booking->status,
+                        'status_label' => $statusLabel,
+                    ],
                 ];
             });
 

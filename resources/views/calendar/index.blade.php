@@ -72,6 +72,49 @@
                 </div>
             </div>
 
+            <x-modal name="calendar-event-details" maxWidth="lg">
+                <div class="rr-event-modal">
+                    <div class="rr-event-modal__header">
+                        <div>
+                            <p class="rr-kicker">Booking details</p>
+                            <h3 id="calendar-event-title" class="rr-event-modal__title">Booking</h3>
+                        </div>
+                        <button type="button" class="rr-event-modal__close" x-on:click="$dispatch('close-modal', 'calendar-event-details')">Close</button>
+                    </div>
+
+                    <div class="rr-event-modal__meta">
+                        <span id="calendar-event-status" class="rr-badge rr-hidden"></span>
+                    </div>
+
+                    <div class="rr-event-modal__grid">
+                        <div class="rr-event-field" data-field="service">
+                            <div class="rr-event-field__label">Service</div>
+                            <div id="calendar-event-service" class="rr-event-field__value"></div>
+                        </div>
+                        <div class="rr-event-field" data-field="description">
+                            <div class="rr-event-field__label">Description</div>
+                            <div id="calendar-event-description" class="rr-event-field__value"></div>
+                        </div>
+                        <div class="rr-event-field" data-field="notes">
+                            <div class="rr-event-field__label">Notes</div>
+                            <div id="calendar-event-notes" class="rr-event-field__value"></div>
+                        </div>
+                        <div class="rr-event-field" data-field="date">
+                            <div class="rr-event-field__label">Date</div>
+                            <div id="calendar-event-date" class="rr-event-field__value"></div>
+                        </div>
+                        <div class="rr-event-field" data-field="time">
+                            <div class="rr-event-field__label">Time</div>
+                            <div id="calendar-event-time" class="rr-event-field__value"></div>
+                        </div>
+                        <div class="rr-event-field" data-field="duration">
+                            <div class="rr-event-field__label">Duration</div>
+                            <div id="calendar-event-duration" class="rr-event-field__value"></div>
+                        </div>
+                    </div>
+                </div>
+            </x-modal>
+
             <div id="reschedule-panel" class="rr-panel hidden">
                 <div class="flex items-center justify-between gap-4">
                     <div>
@@ -385,6 +428,44 @@
                 const calendarEl = document.getElementById('client-calendar');
 
                 if (calendarEl) {
+                    const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+                        timeZone: appTimeZone,
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+
+                    const timeFormatter = new Intl.DateTimeFormat('en-GB', {
+                        timeZone: appTimeZone,
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const titleEl = document.getElementById('calendar-event-title');
+                    const serviceEl = document.getElementById('calendar-event-service');
+                    const descriptionEl = document.getElementById('calendar-event-description');
+                    const notesEl = document.getElementById('calendar-event-notes');
+                    const dateEl = document.getElementById('calendar-event-date');
+                    const timeEl = document.getElementById('calendar-event-time');
+                    const durationEl = document.getElementById('calendar-event-duration');
+                    const statusEl = document.getElementById('calendar-event-status');
+                    const modalFields = document.querySelectorAll('.rr-event-modal .rr-event-field');
+
+                    const setFieldValue = (fieldKey, element, value) => {
+                        const field = document.querySelector(`.rr-event-modal .rr-event-field[data-field="${fieldKey}"]`);
+                        if (!field || !element) {
+                            return;
+                        }
+
+                        if (value) {
+                            element.textContent = value;
+                            field.classList.remove('rr-hidden');
+                        } else {
+                            element.textContent = '';
+                            field.classList.add('rr-hidden');
+                        }
+                    };
+
                     const calendar = new FullCalendar.Calendar(calendarEl, {
                         initialView: window.innerWidth < 768 ? 'timeGridDay' : 'timeGridWeek',
                         height: 'auto',
@@ -414,6 +495,50 @@
                                     harness.classList.add('rr-event-short-harness');
                                 }
                             }
+                        },
+                        eventClick: function (info) {
+                            const event = info.event;
+                            const props = event.extendedProps || {};
+                            const start = event.start;
+                            const end = event.end;
+                            const durationMinutes = start && end ? Math.round((end.getTime() - start.getTime()) / 60000) : null;
+                            const title = event.title || 'Booking';
+
+                            if (titleEl) {
+                                titleEl.textContent = title;
+                            }
+
+                            modalFields.forEach((field) => field.classList.add('rr-hidden'));
+
+                            setFieldValue('service', serviceEl, props.service_name || null);
+                            setFieldValue('description', descriptionEl, props.service_description || null);
+                            setFieldValue('notes', notesEl, props.notes || null);
+                            setFieldValue('date', dateEl, start ? dateFormatter.format(start) : null);
+                            if (start && end) {
+                                setFieldValue('time', timeEl, `${timeFormatter.format(start)} - ${timeFormatter.format(end)}`);
+                            } else {
+                                setFieldValue('time', timeEl, null);
+                            }
+                            setFieldValue('duration', durationEl, durationMinutes ? `${durationMinutes} min` : (props.duration_minutes ? `${props.duration_minutes} min` : null));
+
+                            if (statusEl) {
+                                const statusLabel = props.status_label || props.status || null;
+                                if (statusLabel) {
+                                    statusEl.textContent = statusLabel;
+                                    statusEl.classList.remove('rr-hidden');
+                                    statusEl.classList.remove('rr-badge-danger', 'rr-badge-warning', 'rr-badge-muted', 'rr-badge-success');
+                                    if (props.status === 'cancelled') {
+                                        statusEl.classList.add('rr-badge-muted');
+                                    } else {
+                                        statusEl.classList.add('rr-badge-success');
+                                    }
+                                } else {
+                                    statusEl.textContent = '';
+                                    statusEl.classList.add('rr-hidden');
+                                }
+                            }
+
+                            window.dispatchEvent(new CustomEvent('open-modal', { detail: 'calendar-event-details' }));
                         },
                         events: "{{ route('calendar.events') }}",
                     });

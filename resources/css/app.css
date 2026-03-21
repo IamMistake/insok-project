@@ -280,4 +280,38 @@
     .rr-calendar .fc-timegrid-col {
         background: rgba(255, 255, 255, 0.24);
     }
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness.fc-timegrid-event-harness-inset {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness > .fc-timegrid-event {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0.45rem;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short {
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-main {
+        padding: 1px 6px !important;
+        font-size: 11px !important;
+        line-height: 1.05 !important;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-time,
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 }

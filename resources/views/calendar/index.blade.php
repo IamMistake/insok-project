@@ -396,6 +396,25 @@
                             center: 'title',
                             right: 'dayGridMonth,timeGridWeek,timeGridDay'
                         },
+                        eventDidMount: function (info) {
+                            const start = info.event.start;
+                            const end = info.event.end;
+
+                            if (!start || !end) {
+                                return;
+                            }
+
+                            const durationMinutes = (end.getTime() - start.getTime()) / 60000;
+
+                            if (durationMinutes >= 15 && durationMinutes < 30) {
+                                info.el.classList.add('rr-event-short');
+
+                                const harness = info.el.parentElement;
+                                if (harness) {
+                                    harness.classList.add('rr-event-short-harness');
+                                }
+                            }
+                        },
                         events: "{{ route('calendar.events') }}",
                     });
 

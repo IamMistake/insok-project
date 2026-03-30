@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="rr-kicker mb-2">Availability control</div>
-            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Dodadi povtorliva blokada</h2>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Add recurring block</h2>
         </div>
     </x-slot>
 

@@ -3,11 +3,9 @@
         <div class="flex items-center justify-between">
             <div>
                 <div class="rr-kicker mb-2">Availability control</div>
-                <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Blokirani termini</h2>
+                <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Blocked periods</h2>
             </div>
-            <a href="{{ route('admin.blocked-periods.create') }}" class="ghost-button !no-underline">
-                Dodadi blokada
-            </a>
+            <a href="{{ route('admin.blocked-periods.create') }}" class="ghost-button !no-underline">Add block</a>
         </div>
     </x-slot>
 
@@ -21,9 +19,9 @@
                 <table class="rr-table">
                     <thead>
                         <tr>
-                            <th>Pocetok</th>
-                            <th>Kraj</th>
-                            <th>Pricina</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Reason</th>
                             <th class="px-6 py-3"></th>
                         </tr>
                     </thead>
@@ -34,18 +32,18 @@
                                 <td class="rr-muted">{{ $blockedPeriod->ends_at->format('d.m.Y H:i') }}</td>
                                 <td class="rr-muted">{{ $blockedPeriod->reason ?: '-' }}</td>
                                 <td class="text-right text-sm">
-                                    <a href="{{ route('admin.blocked-periods.edit', $blockedPeriod) }}" class="rr-link">Izmeni</a>
+                                    <a href="{{ route('admin.blocked-periods.edit', $blockedPeriod) }}" class="rr-link">Edit</a>
 
-                                    <form action="{{ route('admin.blocked-periods.destroy', $blockedPeriod) }}" method="POST" class="inline-block ml-3" onsubmit="return confirm('Dali ste sigurni?');">
+                                    <form action="{{ route('admin.blocked-periods.destroy', $blockedPeriod) }}" method="POST" class="inline-block ml-3" onsubmit="return confirm('Are you sure?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Izbrisi</button>
+                                        <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Delete</button>
                                     </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-8 text-center text-sm rr-muted">Nema definirani blokirani termini.</td>
+                                <td colspan="4" class="px-6 py-8 text-center text-sm rr-muted">No blocked periods defined.</td>
                             </tr>
                         @endforelse
                     </tbody>

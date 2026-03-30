@@ -46,7 +46,7 @@
 
 @layer components {
     .rr-page-shell {
-        @apply min-h-screen relative overflow-hidden;
+        @apply min-h-screen relative overflow-x-hidden;
     }
 
     .rr-page-shell::before,
@@ -279,5 +279,103 @@
     .rr-calendar .fc-timegrid-slot,
     .rr-calendar .fc-timegrid-col {
         background: rgba(255, 255, 255, 0.24);
+    }
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness.fc-timegrid-event-harness-inset {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness > .fc-timegrid-event {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0.45rem;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short {
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-main {
+        padding: 1px 6px !important;
+        font-size: 11px !important;
+        line-height: 1.05 !important;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-time,
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rr-hidden {
+        display: none !important;
+    }
+
+    .rr-event-modal {
+        @apply px-6 py-6 sm:px-8 sm:py-7;
+    }
+
+    .rr-event-modal__header {
+        @apply flex flex-wrap items-start justify-between gap-4;
+    }
+
+    .rr-event-modal__title {
+        @apply text-2xl text-[color:var(--rr-text)];
+    }
+
+    .rr-event-modal__close {
+        @apply text-sm font-semibold transition;
+        color: var(--rr-muted);
+    }
+
+    .rr-event-modal__close:hover {
+        color: var(--rr-text);
+    }
+
+    .rr-event-modal__meta {
+        @apply mt-3 flex flex-wrap gap-2;
+    }
+
+    .rr-event-modal__grid {
+        @apply mt-6 grid gap-4 sm:grid-cols-2;
+    }
+
+    .rr-event-field {
+        @apply rounded-2xl border px-4 py-3;
+        background: rgba(255, 255, 255, 0.6);
+        border-color: var(--rr-line);
+        box-shadow: var(--rr-shadow-soft);
+    }
+
+    .rr-event-field__label {
+        @apply text-xs uppercase tracking-[0.16em] font-semibold;
+        color: var(--rr-muted);
+    }
+
+    .rr-event-field__value {
+        @apply mt-2 text-sm leading-relaxed;
+        color: var(--rr-text);
+    }
+
+    .rr-badge-danger {
+        @apply rr-badge;
+        color: var(--rr-danger);
+        background: rgba(161, 70, 54, 0.1);
+        border-color: rgba(161, 70, 54, 0.2);
+    }
+
+    .rr-badge-warning {
+        @apply rr-badge;
+        color: #9a4d07;
+        background: rgba(249, 115, 22, 0.12);
+        border-color: rgba(249, 115, 22, 0.2);
     }
 }

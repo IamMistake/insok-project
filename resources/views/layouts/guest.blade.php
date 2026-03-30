@@ -18,7 +18,7 @@
         <div class="rr-page-shell min-h-screen flex items-center justify-center px-4 py-10 sm:px-6 lg:px-8">
             <div class="w-full max-w-5xl grid gap-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(24rem,0.85fr)] items-center">
                 <div class="hidden lg:block pr-8">
-                    <div class="rr-kicker mb-4">RezerviRaj</div>
+                    <div class="rr-kicker mb-4">ReserveRight</div>
                     <h1 class="rr-display text-5xl leading-[0.95] text-[var(--rr-text)]">Scheduling with a calm point of view.</h1>
                     <p class="mt-6 max-w-xl text-base leading-8 rr-muted">
                         Log in to manage appointments, availability, confirmations, and updates in a space designed to feel precise, warm, and quietly premium.
@@ -33,8 +33,8 @@
                     <a href="/" class="rr-brand mb-5 inline-flex">
                         <span class="rr-brand-mark">R</span>
                         <span class="rr-brand-copy">
-                            <span class="rr-brand-title">RezerviRaj</span>
-                            <span class="rr-brand-subtitle">Booking App</span>
+                            <span class="rr-brand-title">ReserveRight</span>
+                            <span class="rr-brand-subtitle">Booking Platform</span>
                         </span>
                     </a>
 

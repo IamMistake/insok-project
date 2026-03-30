@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="rr-kicker mb-2">Availability control</div>
-            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Izmeni blokiran termin</h2>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Edit blocked period</h2>
         </div>
     </x-slot>
 

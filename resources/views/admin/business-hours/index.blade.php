@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div>
             <div class="rr-kicker mb-2">Availability control</div>
-            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Rabotno vreme</h2>
+            <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Business hours</h2>
         </div>
     </x-slot>
 
@@ -41,21 +41,21 @@
                                 </label>
 
                                 <div>
-                                    <x-input-label for="start_{{ $weekday }}" value="Pocetok" />
+                                    <x-input-label for="start_{{ $weekday }}" value="Start" />
                                     <input id="start_{{ $weekday }}" type="time" name="hours[{{ $weekday }}][start_time]" value="{{ old("hours.$weekday.start_time", $hour?->start_time ? substr($hour->start_time, 0, 5) : '') }}" class="rr-control">
                                 </div>
 
                                 <div>
-                                    <x-input-label for="end_{{ $weekday }}" value="Kraj" />
+                                    <x-input-label for="end_{{ $weekday }}" value="End" />
                                     <input id="end_{{ $weekday }}" type="time" name="hours[{{ $weekday }}][end_time]" value="{{ old("hours.$weekday.end_time", $hour?->end_time ? substr($hour->end_time, 0, 5) : '') }}" class="rr-control">
                                 </div>
 
-                                <div class="text-sm rr-muted sm:text-right">{{ $isActive ? 'Aktiven den' : 'Neaktiven den' }}</div>
+                                <div class="text-sm rr-muted sm:text-right">{{ $isActive ? 'Active day' : 'Inactive day' }}</div>
                             </div>
                         @endforeach
                     </div>
 
-                    <x-primary-button>Zacuvaj rabotno vreme</x-primary-button>
+                    <x-primary-button>Save business hours</x-primary-button>
                 </form>
             </div>
         </div>

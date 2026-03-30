@@ -3,11 +3,9 @@
         <div class="flex items-center justify-between">
             <div>
                 <div class="rr-kicker mb-2">Admin setup</div>
-                <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Upravljanje so uslugi</h2>
+                <h2 class="rr-section-title text-[color:var(--rr-text)] leading-tight">Manage services</h2>
             </div>
-            <a href="{{ route('admin.services.create') }}" class="ghost-button !no-underline">
-                Nova usluga
-            </a>
+            <a href="{{ route('admin.services.create') }}" class="ghost-button !no-underline">New service</a>
         </div>
     </x-slot>
 
@@ -21,9 +19,9 @@
                 <table class="rr-table">
                     <thead>
                         <tr>
-                            <th>Usluga</th>
-                            <th>Traenje</th>
-                            <th>Cena</th>
+                            <th>Service</th>
+                            <th>Duration</th>
+                            <th>Price</th>
                             <th>Status</th>
                             <th class="px-6 py-3"></th>
                         </tr>
@@ -39,22 +37,22 @@
                                 <td class="rr-muted">{{ number_format((float) $service->price, 2) }} MKD</td>
                                 <td>
                                     <span class="{{ $service->is_active ? 'rr-badge-success' : 'rr-badge-muted' }}">
-                                        {{ $service->is_active ? 'Aktivna' : 'Neaktivna' }}
+                                        {{ $service->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </td>
                                 <td class="text-right text-sm">
-                                    <a href="{{ route('admin.services.edit', $service) }}" class="rr-link">Izmeni</a>
+                                    <a href="{{ route('admin.services.edit', $service) }}" class="rr-link">Edit</a>
 
-                                    <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline-block ml-3" onsubmit="return confirm('Dali ste sigurni?');">
+                                    <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline-block ml-3" onsubmit="return confirm('Are you sure?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Izbrisi</button>
+                                        <button class="text-[color:var(--rr-danger)] transition hover:opacity-80">Delete</button>
                                     </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-8 text-center text-sm rr-muted">Nema vneseni uslugi.</td>
+                                <td colspan="5" class="px-6 py-8 text-center text-sm rr-muted">No services yet.</td>
                             </tr>
                         @endforelse
                     </tbody>

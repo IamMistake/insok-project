@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>RezerviRaj</title>
+        <title>ReserveRight</title>
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700|domine:400,700&display=swap" rel="stylesheet" />
         <style>
@@ -237,26 +237,78 @@
                 box-shadow: 0 18px 40px rgba(29, 22, 15, 0.08);
                 backdrop-filter: blur(10px);
             }
-
             .panel-card.primary {
                 width: min(20rem, calc(100% - 4rem));
                 top: 3rem;
                 left: 2rem;
                 padding: 1.5rem;
+                z-index: 1;
             }
 
             .panel-card.secondary {
-                width: 11rem;
+                width: clamp(9.5rem, 32%, 11rem);
                 right: 2rem;
                 bottom: 5rem;
                 padding: 1.15rem;
+                z-index: 2;
             }
 
             .panel-card.tertiary {
-                width: 13rem;
+                width: clamp(10.5rem, 38%, 13rem);
                 left: 4rem;
                 bottom: 2rem;
                 padding: 1.15rem;
+                z-index: 2;
+            }
+
+            /* add this new breakpoint */
+            @media (max-width: 1180px) {
+                .hero-panel {
+                    min-height: 30rem;
+                }
+
+                .panel-card.secondary {
+                    right: 1.25rem;
+                    bottom: 4.75rem;
+                    width: 9.5rem;
+                }
+
+                .panel-card.tertiary {
+                    left: 1.25rem;
+                    bottom: 1.25rem;
+                    width: 10.5rem;
+                }
+            }
+
+            @media (max-width: 720px) {
+                .hero-panel {
+                    min-height: 23rem;
+                    padding: 1.25rem;
+                }
+
+                .panel-card.primary,
+                .panel-card.secondary,
+                .panel-card.tertiary {
+                    position: absolute;
+                }
+
+                .panel-card.primary {
+                    top: 1.5rem;
+                    left: 1.25rem;
+                    width: calc(100% - 2.5rem);
+                }
+
+                .panel-card.secondary {
+                    right: 1.25rem;
+                    bottom: 4.25rem;
+                    width: 9.5rem;
+                }
+
+                .panel-card.tertiary {
+                    left: 1.25rem;
+                    bottom: 1.25rem;
+                    width: 10.5rem;
+                }
             }
 
             .panel-label {
@@ -496,8 +548,8 @@
                 <a href="/" class="brand">
                     <span class="brand-mark">R</span>
                     <span class="brand-copy">
-                        <span class="brand-title">RezerviRaj</span>
-                        <span class="brand-subtitle">Booking App</span>
+                        <span class="brand-title">ReserveRight</span>
+                        <span class="brand-subtitle">Booking Platform</span>
                     </span>
                 </a>
 
@@ -515,7 +567,7 @@
                         <div class="eyebrow">Quiet precision for modern scheduling</div>
                         <h1>Appointments arranged with calm clarity.</h1>
                         <p>
-                            RezerviRaj is a refined booking platform where clients reserve appointments in moments and admins manage availability with precision, confidence, and ease.
+                            ReserveRight is a refined booking platform where clients reserve appointments in moments and admins manage availability with precision, confidence, and ease.
                         </p>
 
                         <div class="actions">
@@ -618,8 +670,8 @@
             </main>
 
             <footer class="container site-footer">
-                <div>RezerviRaj</div>
-                <div>&copy; {{ now()->year }} RezerviRaj. All rights reserved.</div>
+                <div>ReserveRight</div>
+                <div>&copy; {{ now()->year }} ReserveRight. All rights reserved.</div>
             </footer>
         </div>
     </body>

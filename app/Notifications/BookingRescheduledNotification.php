@@ -26,13 +26,13 @@ class BookingRescheduledNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Prezakazuvanje na rezervacija')
-            ->greeting('Zdravo '.$notifiable->name.',')
-            ->line('Rezervacijata e uspesno prezakazana.')
-            ->line('Usluga: '.$this->booking->service->name)
-            ->line('Prethoden termin: '.$this->oldStartsAt->format('d.m.Y H:i').' - '.$this->oldEndsAt->format('H:i'))
-            ->line('Nov termin: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
-            ->action('Pregled na rezervacii', route('dashboard'));
+            ->subject('Booking rescheduled')
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line('Your booking has been rescheduled successfully.')
+            ->line('Service: '.$this->booking->service->name)
+            ->line('Previous time: '.$this->oldStartsAt->format('d.m.Y H:i').' - '.$this->oldEndsAt->format('H:i'))
+            ->line('New time: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
+            ->action('View bookings', route('dashboard'));
     }
 
     public function toArray(object $notifiable): array

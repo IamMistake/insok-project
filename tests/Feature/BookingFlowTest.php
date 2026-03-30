@@ -43,6 +43,50 @@ class BookingFlowTest extends TestCase
         Notification::assertSentTo($admin, BookingCreatedNotification::class);
     }
 
+    public function test_selected_slot_persists_and_calendar_event_matches_time(): void
+    {
+        CarbonImmutable::setTestNow(CarbonImmutable::parse('2026-03-18 07:00:00', 'Europe/Skopje'));
+
+        $client = User::factory()->create(['role' => User::ROLE_CLIENT]);
+        $service = $this->createService(30);
+        $date = CarbonImmutable::parse('2026-03-19', 'Europe/Skopje');
+
+        BusinessHour::query()->create([
+            'weekday' => $date->dayOfWeek,
+            'is_active' => true,
+            'start_time' => '08:00',
+            'end_time' => '10:00',
+        ]);
+
+        $availability = $this->actingAs($client)->getJson(route('bookings.availability', [
+            'service_id' => $service->id,
+            'date' => $date->toDateString(),
+        ]));
+
+        $availability->assertOk();
+        $slot = $availability->json('slots.0');
+
+        $this->actingAs($client)->post(route('bookings.store'), [
+            'service_id' => $service->id,
+            'starts_at' => $slot['start'],
+        ])->assertRedirect(route('calendar.index'));
+
+        $booking = Booking::query()->firstOrFail();
+        $this->assertSame($slot['label'], $booking->starts_at->format('H:i'));
+        $this->assertSame('08:30', $booking->ends_at->format('H:i'));
+
+        $events = $this->actingAs($client)->getJson(route('calendar.events', [
+            'start' => $date->startOfDay()->toIso8601String(),
+            'end' => $date->endOfDay()->toIso8601String(),
+        ]));
+
+        $events->assertOk();
+        $eventStart = CarbonImmutable::parse($events->json('0.start'), 'Europe/Skopje');
+        $this->assertSame($booking->starts_at->toDateTimeString(), $eventStart->toDateTimeString());
+
+        CarbonImmutable::setTestNow();
+    }
+
     public function test_overlapping_slot_cannot_be_booked(): void
     {
         $this->seedBusinessHours();
@@ -290,7 +334,7 @@ class BookingFlowTest extends TestCase
     private function createService(int $durationMinutes): Service
     {
         return Service::query()->create([
-            'name' => 'Test usluga '.$durationMinutes,
+            'name' => 'Test service '.$durationMinutes,
             'duration_minutes' => $durationMinutes,
             'price' => 500,
             'is_active' => true,

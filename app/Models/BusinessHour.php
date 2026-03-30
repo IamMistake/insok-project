@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 class BusinessHour extends Model
 {
     public const DAY_LABELS = [
-        0 => 'Nedela',
-        1 => 'Ponedelnik',
-        2 => 'Vtornik',
-        3 => 'Sreda',
-        4 => 'Cetvrtok',
-        5 => 'Petok',
-        6 => 'Sabota',
+        0 => 'Sunday',
+        1 => 'Monday',
+        2 => 'Tuesday',
+        3 => 'Wednesday',
+        4 => 'Thursday',
+        5 => 'Friday',
+        6 => 'Saturday',
     ];
 
     protected function casts(): array
@@ -27,6 +27,6 @@ class BusinessHour extends Model
 
     public static function dayLabel(int $weekday): string
     {
-        return self::DAY_LABELS[$weekday] ?? 'Den';
+        return self::DAY_LABELS[$weekday] ?? 'Day';
     }
 }

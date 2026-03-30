@@ -35,9 +35,9 @@ class DemoDataSeeder extends Seeder
         );
 
         $serviceA = Service::query()->updateOrCreate(
-            ['name' => 'Konsultacija'],
+            ['name' => 'Consultation'],
             [
-                'description' => 'Individualna konsultacija za izbor na usluga.',
+                'description' => 'One-on-one consultation to choose the right service.',
                 'duration_minutes' => 30,
                 'price' => 1200,
                 'is_active' => true,
@@ -45,9 +45,9 @@ class DemoDataSeeder extends Seeder
         );
 
         $serviceB = Service::query()->updateOrCreate(
-            ['name' => 'Masaza'],
+            ['name' => 'Massage'],
             [
-                'description' => 'Relaks masaza so trajanje od 60 minuti.',
+                'description' => 'Relaxing massage with a 60-minute duration.',
                 'duration_minutes' => 60,
                 'price' => 1800,
                 'is_active' => true,
@@ -75,7 +75,7 @@ class DemoDataSeeder extends Seeder
                 'ends_at' => $blockedStart->addHour(),
             ],
             [
-                'reason' => 'Pauza',
+                'reason' => 'Break',
             ],
         );
 
@@ -87,7 +87,7 @@ class DemoDataSeeder extends Seeder
                     'end_time' => '13:00',
                 ],
                 [
-                    'reason' => 'Dnevna pauza',
+                    'reason' => 'Daily break',
                     'is_active' => true,
                 ],
             );
@@ -104,7 +104,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'status' => Booking::STATUS_BOOKED,
-                'notes' => 'Primer rezervacija',
+                'notes' => 'Sample booking',
             ],
         );
 
@@ -117,7 +117,7 @@ class DemoDataSeeder extends Seeder
             ],
             [
                 'status' => Booking::STATUS_CANCELLED,
-                'notes' => 'Primer otkazana rezervacija',
+                'notes' => 'Sample cancelled booking',
             ],
         );
 

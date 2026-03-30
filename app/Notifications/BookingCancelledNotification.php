@@ -21,13 +21,13 @@ class BookingCancelledNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Otkazuvanje na rezervacija')
-            ->greeting('Zdravo '.$notifiable->name.',')
-            ->line('Rezervacijata e otkazana.')
-            ->line('Usluga: '.$this->booking->service->name)
-            ->line('Termin: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
-            ->line('Status: Otkazana rezervacija')
-            ->action('Pregled na rezervacii', route('dashboard'));
+            ->subject('Booking cancelled')
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line('Your booking has been cancelled.')
+            ->line('Service: '.$this->booking->service->name)
+            ->line('Time: '.$this->booking->starts_at->format('d.m.Y H:i').' - '.$this->booking->ends_at->format('H:i'))
+            ->line('Status: Cancelled booking')
+            ->action('View bookings', route('dashboard'));
     }
 
     public function toArray(object $notifiable): array

@@ -1,3 +1,381 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --rr-bg: #f6f2ea;
+        --rr-bg-strong: #fbf8f2;
+        --rr-surface: rgba(255, 255, 255, 0.72);
+        --rr-surface-strong: rgba(255, 255, 255, 0.9);
+        --rr-text: #171717;
+        --rr-muted: #625b52;
+        --rr-line: rgba(23, 23, 23, 0.1);
+        --rr-line-strong: rgba(23, 23, 23, 0.16);
+        --rr-accent: #9f7a4b;
+        --rr-accent-soft: rgba(159, 122, 75, 0.12);
+        --rr-danger: #a14636;
+        --rr-success: #2f6a57;
+        --rr-shadow: 0 24px 60px rgba(30, 24, 18, 0.08);
+        --rr-shadow-soft: 0 18px 44px rgba(30, 24, 18, 0.06);
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply antialiased;
+        color: var(--rr-text);
+        background:
+            radial-gradient(circle at top left, rgba(159, 122, 75, 0.14), transparent 28%),
+            radial-gradient(circle at 85% 20%, rgba(23, 23, 23, 0.05), transparent 22%),
+            linear-gradient(180deg, var(--rr-bg-strong) 0%, var(--rr-bg) 100%);
+        font-family: 'Instrument Sans', sans-serif;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    .rr-display {
+        font-family: 'Domine', serif;
+        letter-spacing: -0.04em;
+    }
+}
+
+@layer components {
+    .rr-page-shell {
+        @apply min-h-screen relative overflow-x-hidden;
+    }
+
+    .rr-page-shell::before,
+    .rr-page-shell::after {
+        content: '';
+        position: absolute;
+        border: 1px solid var(--rr-line);
+        pointer-events: none;
+    }
+
+    .rr-page-shell::before {
+        width: 16rem;
+        height: 16rem;
+        top: 5rem;
+        right: -4rem;
+        border-radius: 9999px;
+    }
+
+    .rr-page-shell::after {
+        width: 26rem;
+        height: 26rem;
+        left: -17rem;
+        top: 22rem;
+        transform: rotate(18deg);
+    }
+
+    .rr-container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .rr-topbar {
+        @apply py-4 lg:py-6;
+    }
+
+    .rr-brand {
+        @apply inline-flex items-center gap-3 text-inherit no-underline;
+    }
+
+    .rr-brand-mark {
+        @apply h-10 w-10 rounded-full grid place-items-center text-sm font-semibold;
+        background: rgba(255, 255, 255, 0.55);
+        border: 1px solid var(--rr-line);
+        box-shadow: inset 0 0 0 0.35rem rgba(159, 122, 75, 0.08);
+    }
+
+    .rr-brand-copy {
+        @apply grid gap-0.5;
+    }
+
+    .rr-brand-title {
+        @apply text-[0.95rem] font-bold uppercase tracking-[0.16em];
+    }
+
+    .rr-brand-subtitle {
+        @apply text-[0.72rem] uppercase tracking-[0.12em];
+        color: var(--rr-muted);
+    }
+
+    .rr-header-card {
+        @apply rounded-[1.5rem] border px-6 py-5;
+        background: linear-gradient(180deg, var(--rr-surface-strong), rgba(255, 255, 255, 0.66));
+        border-color: var(--rr-line);
+        box-shadow: var(--rr-shadow-soft);
+        backdrop-filter: blur(12px);
+    }
+
+    .rr-surface {
+        @apply rounded-[1.5rem] border;
+        background: linear-gradient(180deg, var(--rr-surface-strong), rgba(255, 255, 255, 0.66));
+        border-color: var(--rr-line);
+        box-shadow: var(--rr-shadow-soft);
+        backdrop-filter: blur(12px);
+    }
+
+    .rr-panel {
+        @apply rr-surface p-6 sm:p-8;
+    }
+
+    .button,
+    .ghost-button {
+        @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition duration-150;
+    }
+
+    .button {
+        @apply text-white;
+        background: #1f1c18;
+        box-shadow: 0 14px 32px rgba(31, 28, 24, 0.18);
+    }
+
+    .button:hover,
+    .ghost-button:hover {
+        transform: translateY(-1px);
+    }
+
+    .ghost-button {
+        color: var(--rr-text);
+        border: 1px solid var(--rr-line);
+        background: rgba(255, 255, 255, 0.56);
+    }
+
+    .rr-muted {
+        color: var(--rr-muted);
+    }
+
+    .rr-section-title {
+        @apply text-2xl sm:text-3xl;
+        line-height: 1.08;
+    }
+
+    .rr-kicker {
+        @apply text-xs uppercase tracking-[0.16em] font-medium;
+        color: var(--rr-muted);
+    }
+
+    .rr-divider {
+        border-color: var(--rr-line);
+    }
+
+    .rr-control {
+        @apply mt-1 block w-full rounded-2xl border px-4 py-3 text-sm shadow-[0_10px_24px_rgba(30,24,18,0.04)] focus:outline-none focus:ring-2;
+        border-color: var(--rr-line);
+        background: rgba(255, 255, 255, 0.72);
+        color: var(--rr-text);
+    }
+
+    .rr-control:focus {
+        border-color: rgba(159, 122, 75, 0.45);
+        --tw-ring-color: rgba(159, 122, 75, 0.18);
+    }
+
+    .rr-card-grid {
+        @apply grid gap-6 lg:grid-cols-3;
+    }
+
+    .rr-table-wrap {
+        @apply rr-surface overflow-hidden;
+    }
+
+    .rr-table {
+        @apply min-w-full divide-y;
+        --tw-divide-opacity: 1;
+        divide-color: var(--rr-line);
+    }
+
+    .rr-table thead {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .rr-table th {
+        @apply px-6 py-3 text-left text-xs font-semibold uppercase tracking-[0.14em];
+        color: var(--rr-muted);
+    }
+
+    .rr-table td {
+        @apply px-6 py-4 align-top text-sm;
+    }
+
+    .rr-badge {
+        @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid var(--rr-line);
+    }
+
+    .rr-badge-success {
+        @apply rr-badge;
+        color: var(--rr-success);
+        background: rgba(47, 106, 87, 0.08);
+        border-color: rgba(47, 106, 87, 0.16);
+    }
+
+    .rr-badge-muted {
+        @apply rr-badge;
+        color: var(--rr-muted);
+    }
+
+    .rr-link {
+        @apply transition-colors duration-150;
+        color: var(--rr-accent);
+    }
+
+    .rr-link:hover {
+        color: #7e6038;
+    }
+
+    .rr-alert {
+        @apply rounded-2xl border px-4 py-4 text-sm;
+        box-shadow: var(--rr-shadow-soft);
+    }
+
+    .rr-alert-success {
+        @apply rr-alert;
+        color: var(--rr-success);
+        background: rgba(47, 106, 87, 0.08);
+        border-color: rgba(47, 106, 87, 0.16);
+    }
+
+    .rr-alert-error {
+        @apply rr-alert;
+        color: var(--rr-danger);
+        background: rgba(161, 70, 54, 0.08);
+        border-color: rgba(161, 70, 54, 0.16);
+    }
+
+    .rr-calendar :is(.fc-theme-standard td, .fc-theme-standard th, .fc-theme-standard .fc-scrollgrid) {
+        border-color: var(--rr-line);
+    }
+
+    .rr-calendar .fc-toolbar-title {
+        font-family: 'Domine', serif;
+        font-size: 1.5rem;
+        letter-spacing: -0.04em;
+    }
+
+    .rr-calendar .fc-button {
+        background: rgba(255, 255, 255, 0.76) !important;
+        border: 1px solid var(--rr-line) !important;
+        color: var(--rr-text) !important;
+        text-transform: none !important;
+        box-shadow: none !important;
+    }
+
+    .rr-calendar .fc-button-primary:not(:disabled):active,
+    .rr-calendar .fc-button-primary:not(:disabled).fc-button-active,
+    .rr-calendar .fc-button:hover {
+        background: rgba(159, 122, 75, 0.12) !important;
+        border-color: rgba(159, 122, 75, 0.24) !important;
+    }
+
+    .rr-calendar .fc-daygrid-day,
+    .rr-calendar .fc-timegrid-slot,
+    .rr-calendar .fc-timegrid-col {
+        background: rgba(255, 255, 255, 0.24);
+    }
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness.fc-timegrid-event-harness-inset {
+        inset-inline-start: 0 !important;
+        inset-inline-end: 0 !important;
+    }
+
+    .rr-calendar .fc-timegrid-event-harness.rr-event-short-harness > .fc-timegrid-event {
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0.45rem;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short {
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-main {
+        padding: 1px 6px !important;
+        font-size: 11px !important;
+        line-height: 1.05 !important;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-time,
+    .rr-calendar .fc-timegrid-event.rr-event-short .fc-event-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rr-hidden {
+        display: none !important;
+    }
+
+    .rr-event-modal {
+        @apply px-6 py-6 sm:px-8 sm:py-7;
+    }
+
+    .rr-event-modal__header {
+        @apply flex flex-wrap items-start justify-between gap-4;
+    }
+
+    .rr-event-modal__title {
+        @apply text-2xl text-[color:var(--rr-text)];
+    }
+
+    .rr-event-modal__close {
+        @apply text-sm font-semibold transition;
+        color: var(--rr-muted);
+    }
+
+    .rr-event-modal__close:hover {
+        color: var(--rr-text);
+    }
+
+    .rr-event-modal__meta {
+        @apply mt-3 flex flex-wrap gap-2;
+    }
+
+    .rr-event-modal__grid {
+        @apply mt-6 grid gap-4 sm:grid-cols-2;
+    }
+
+    .rr-event-field {
+        @apply rounded-2xl border px-4 py-3;
+        background: rgba(255, 255, 255, 0.6);
+        border-color: var(--rr-line);
+        box-shadow: var(--rr-shadow-soft);
+    }
+
+    .rr-event-field__label {
+        @apply text-xs uppercase tracking-[0.16em] font-semibold;
+        color: var(--rr-muted);
+    }
+
+    .rr-event-field__value {
+        @apply mt-2 text-sm leading-relaxed;
+        color: var(--rr-text);
+    }
+
+    .rr-badge-danger {
+        @apply rr-badge;
+        color: var(--rr-danger);
+        background: rgba(161, 70, 54, 0.1);
+        border-color: rgba(161, 70, 54, 0.2);
+    }
+
+    .rr-badge-warning {
+        @apply rr-badge;
+        color: #9a4d07;
+        background: rgba(249, 115, 22, 0.12);
+        border-color: rgba(249, 115, 22, 0.2);
+    }
+}

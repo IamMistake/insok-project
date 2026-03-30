@@ -1,135 +1,90 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+<nav x-data="{ open: false }" class="rr-container rr-topbar relative z-50">
+    <div class="rr-header-card">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div class="flex items-center justify-between gap-4">
+                <a href="{{ route('dashboard') }}" class="rr-brand">
+                    <span class="rr-brand-mark">R</span>
+                    <span class="rr-brand-copy">
+                        <span class="rr-brand-title">ReserveRight</span>
+                        <span class="rr-brand-subtitle">Booking Platform</span>
+                    </span>
+                </a>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
-                        <x-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">
-                            {{ __('Admin Kalendar') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">
-                            {{ __('Uslugi') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">
-                            {{ __('Rabotno vreme') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">
-                            {{ __('Blokadi') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">
-                            {{ __('Povtorlivi blokadi') }}
-                        </x-nav-link>
-                    @else
-                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">
-                            {{ __('Moj kalendar') }}
-                        </x-nav-link>
-                    @endif
-                </div>
-            </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <button @click="open = ! open" class="inline-flex items-center justify-center rounded-full border border-[color:var(--rr-line)] bg-[rgba(255,255,255,0.5)] p-2 text-[color:var(--rr-muted)] sm:hidden">
+                    <svg class="h-5 w-5" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" />
+                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-        </div>
-    </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
-                <x-responsive-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">
-                    {{ __('Admin Kalendar') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">
-                    {{ __('Uslugi') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">
-                    {{ __('Rabotno vreme') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">
-                    {{ __('Blokadi') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">
-                    {{ __('Povtorlivi blokadi') }}
-                </x-responsive-nav-link>
-            @else
-                <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">
-                    {{ __('Moj kalendar') }}
-                </x-responsive-nav-link>
-            @endif
+            <div class="hidden flex-1 items-center justify-between gap-6 sm:flex">
+                <div class="flex flex-wrap items-center gap-2">
+                    @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
+                        <x-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin calendar') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Services') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Business hours') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blocked periods') }}</x-nav-link>
+                        <x-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Recurring blocks') }}</x-nav-link>
+                    @else
+                        <x-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('My calendar') }}</x-nav-link>
+                    @endif
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden text-right lg:block">
+                        <div class="text-sm font-medium text-[color:var(--rr-text)]">{{ Auth::user()->name }}</div>
+                        <div class="text-xs uppercase tracking-[0.12em] text-[color:var(--rr-muted)]">{{ Auth::user()->email }}</div>
+                    </div>
+
+                    <x-dropdown align="right" width="56">
+                        <x-slot name="trigger">
+                            <button class="inline-flex items-center gap-3 rounded-full border border-[color:var(--rr-line)] bg-[rgba(255,255,255,0.52)] px-4 py-2 text-sm font-medium text-[color:var(--rr-text)] transition hover:bg-[rgba(159,122,75,0.08)] focus:outline-none">
+                                <span>{{ __('Account') }}</span>
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <div class="px-4 pb-2 pt-1 text-xs uppercase tracking-[0.14em] text-[color:var(--rr-muted)]">{{ Auth::user()->email }}</div>
+                            <div class="space-y-1 px-2 pb-2">
+                                <x-dropdown-link :href="route('profile.edit')">{{ __('Profile') }}</x-dropdown-link>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Log Out') }}</x-dropdown-link>
+                                </form>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+            </div>
         </div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+        <div x-show="open" x-transition class="space-y-3 pt-4 sm:hidden" style="display: none;">
+            <div class="space-y-2">
+                @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
+                    <x-responsive-nav-link :href="route('admin.calendar.index')" :active="request()->routeIs('admin.calendar.*')">{{ __('Admin calendar') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.services.index')" :active="request()->routeIs('admin.services.*')">{{ __('Services') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.business-hours.index')" :active="request()->routeIs('admin.business-hours.*')">{{ __('Business hours') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.blocked-periods.index')" :active="request()->routeIs('admin.blocked-periods.*')">{{ __('Blocked periods') }}</x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('admin.recurring-blocked-periods.index')" :active="request()->routeIs('admin.recurring-blocked-periods.*')">{{ __('Recurring blocks') }}</x-responsive-nav-link>
+                @else
+                    <x-responsive-nav-link :href="route('calendar.index')" :active="request()->routeIs('calendar.*') || request()->routeIs('bookings.*')">{{ __('My calendar') }}</x-responsive-nav-link>
+                @endif
             </div>
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
+            <div class="rounded-2xl border border-[color:var(--rr-line)] bg-[rgba(255,255,255,0.48)] p-4">
+                <div class="text-sm font-medium text-[color:var(--rr-text)]">{{ Auth::user()->name }}</div>
+                <div class="mt-1 text-xs uppercase tracking-[0.12em] text-[color:var(--rr-muted)]">{{ Auth::user()->email }}</div>
+                <div class="mt-4 space-y-2">
+                    <x-responsive-nav-link :href="route('profile.edit')">{{ __('Profile') }}</x-responsive-nav-link>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">{{ __('Log Out') }}</x-responsive-nav-link>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

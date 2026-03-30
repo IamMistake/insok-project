@@ -30,7 +30,7 @@ class BookingController extends Controller
         ]);
 
         $service = Service::query()->active()->findOrFail($validated['service_id']);
-        $date = CarbonImmutable::parse($validated['date']);
+        $date = CarbonImmutable::parse($validated['date'], config('app.timezone'));
         $ignoreBookingId = $validated['ignore_booking_id'] ?? null;
 
         if ($ignoreBookingId !== null) {
@@ -49,18 +49,18 @@ class BookingController extends Controller
     public function store(StoreBookingRequest $request, AvailabilityService $availabilityService): RedirectResponse
     {
         $service = Service::query()->active()->findOrFail($request->integer('service_id'));
-        $startsAt = CarbonImmutable::parse($request->input('starts_at'));
+        $startsAt = CarbonImmutable::parse($request->input('starts_at'), config('app.timezone'));
 
         if (! $availabilityService->canBook($service, $startsAt)) {
             throw ValidationException::withMessages([
-                'starts_at' => 'Izbraniot termin poveke ne e sloboden. Izberete drug termin.',
+                'starts_at' => 'The selected slot is no longer available. Please choose another.',
             ]);
         }
 
         $booking = DB::transaction(function () use ($request, $service, $startsAt, $availabilityService): Booking {
             if (! $availabilityService->canBook($service, $startsAt)) {
                 throw ValidationException::withMessages([
-                    'starts_at' => 'Izbraniot termin poveke ne e sloboden. Izberete drug termin.',
+                    'starts_at' => 'The selected slot is no longer available. Please choose another.',
                 ]);
             }
 
@@ -79,7 +79,7 @@ class BookingController extends Controller
 
         return redirect()
             ->route('calendar.index')
-            ->with('status', 'Rezervacijata e uspesno kreirana.');
+            ->with('status', 'Booking created successfully.');
     }
 
     public function reschedule(Request $request, Booking $booking, AvailabilityService $availabilityService): RedirectResponse
@@ -88,13 +88,13 @@ class BookingController extends Controller
 
         if ($booking->status !== Booking::STATUS_BOOKED) {
             return back()->withErrors([
-                'booking' => 'Mozat da se prezakazat samo aktivni rezervacii.',
+                'booking' => 'Only active bookings can be rescheduled.',
             ]);
         }
 
         if ($booking->starts_at->isPast()) {
             return back()->withErrors([
-                'booking' => 'Pominat termin ne moze da se prezakaze.',
+                'booking' => 'Past bookings cannot be rescheduled.',
             ]);
         }
 
@@ -102,25 +102,25 @@ class BookingController extends Controller
             'starts_at' => ['required', 'date'],
         ]);
 
-        $startsAt = CarbonImmutable::parse($validated['starts_at']);
+        $startsAt = CarbonImmutable::parse($validated['starts_at'], config('app.timezone'));
         $service = $booking->service;
         $originalStartsAt = $booking->starts_at->toImmutable();
         $originalEndsAt = $booking->ends_at->toImmutable();
 
         if ($startsAt->equalTo($originalStartsAt)) {
-            return back()->with('status', 'Rezervacijata vekje e na izbraniot termin.');
+            return back()->with('status', 'The booking is already on the selected slot.');
         }
 
         if (! $availabilityService->canBook($service, $startsAt, $booking->id)) {
             return back()->withErrors([
-                'booking' => 'Noviot termin ne e sloboden. Izberete drug.',
+                'booking' => 'The new slot is not available. Please choose another.',
             ]);
         }
 
         DB::transaction(function () use ($booking, $service, $startsAt, $availabilityService): void {
             if (! $availabilityService->canBook($service, $startsAt, $booking->id)) {
                 throw ValidationException::withMessages([
-                    'booking' => 'Noviot termin vo megjuvreme stana nedostapen.',
+                    'booking' => 'The new slot became unavailable. Please choose another.',
                 ]);
             }
 
@@ -135,7 +135,7 @@ class BookingController extends Controller
 
         return redirect()
             ->route('calendar.index')
-            ->with('status', 'Rezervacijata e uspesno prezakazana.');
+            ->with('status', 'Booking rescheduled successfully.');
     }
 
     public function destroy(Booking $booking): RedirectResponse
@@ -143,12 +143,12 @@ class BookingController extends Controller
         abort_unless($booking->user_id === Auth::id(), 403);
 
         if ($booking->status === Booking::STATUS_CANCELLED) {
-            return back()->with('status', 'Rezervacijata vekje e otkazana.');
+            return back()->with('status', 'This booking is already cancelled.');
         }
 
         if ($booking->starts_at->isPast()) {
             return back()->withErrors([
-                'booking' => 'Ne mozete da otkazete pominat termin.',
+                'booking' => 'You cannot cancel a past booking.',
             ]);
         }
 
@@ -161,7 +161,7 @@ class BookingController extends Controller
 
         return redirect()
             ->route('calendar.index')
-            ->with('status', 'Rezervacijata e otkazana.');
+            ->with('status', 'Booking cancelled.');
     }
 
     private function notifyBookingParticipants(Booking $booking, object $notification): void
